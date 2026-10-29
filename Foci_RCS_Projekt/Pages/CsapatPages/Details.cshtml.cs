@@ -1,4 +1,5 @@
-﻿using Foci_RCS_Projekt.Data;
+﻿
+using Foci_RCS_Projekt.Data;
 using Foci_RCS_Projekt.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,6 +20,8 @@ public class DetailsModel : PageModel
 
     public List<Merkozes> Merkozesek { get; set; } = new();
 
+    public List<FormaEredmeny> UtolsoOtMerkozes { get; set; } = new();
+
     public async Task<IActionResult> OnGetAsync(int? id)
     {
         if (id == null)
@@ -33,6 +36,7 @@ public class DetailsModel : PageModel
 
         Csapat = csapat;
 
+        // A csapat összes mérkőzése, a még le nem játszottakkal együtt.
         Merkozesek = await _context.Merkozesek
             .AsNoTracking()
             .Include(m => m.HazaiCsapat)
@@ -42,6 +46,56 @@ public class DetailsModel : PageModel
             .OrderByDescending(m => m.Datum)
             .ToListAsync();
 
+        // Csak az eredménnyel rendelkező mérkőzések számítanak bele a formába.
+        var lejatszottMeccsek = Merkozesek
+            .Where(m => m.HazaiGol.HasValue &&
+                        m.VendegGol.HasValue)
+            .OrderByDescending(m => m.Datum)
+            .ThenByDescending(m => m.Id)
+            .Take(5);
+
+        foreach (var meccs in lejatszottMeccsek)
+        {
+            bool hazai = meccs.HazaiCsapatId == Csapat.Id;
+
+            int sajatGol = hazai
+                ? meccs.HazaiGol!.Value
+                : meccs.VendegGol!.Value;
+
+            int ellenfelGol = hazai
+                ? meccs.VendegGol!.Value
+                : meccs.HazaiGol!.Value;
+
+            string eredmeny;
+
+            if (sajatGol > ellenfelGol)
+                eredmeny = "GY";
+            else if (sajatGol == ellenfelGol)
+                eredmeny = "D";
+            else
+                eredmeny = "V";
+
+            UtolsoOtMerkozes.Add(new FormaEredmeny
+            {
+                Datum = meccs.Datum,
+                Ellenfel = hazai
+                    ? meccs.VendegCsapat.Nev
+                    : meccs.HazaiCsapat.Nev,
+                Eredmeny = eredmeny,
+                SajatGol = sajatGol,
+                EllenfelGol = ellenfelGol
+            });
+        }
+
         return Page();
+    }
+
+    public class FormaEredmeny
+    {
+        public DateTime Datum { get; set; }
+        public string Ellenfel { get; set; } = string.Empty;
+        public string Eredmeny { get; set; } = string.Empty;
+        public int SajatGol { get; set; }
+        public int EllenfelGol { get; set; }
     }
 }
