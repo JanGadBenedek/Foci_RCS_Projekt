@@ -1,5 +1,6 @@
 ﻿using Foci_RCS_Projekt.Data;
 using Foci_RCS_Projekt.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,12 +17,35 @@ public class IndexModel : PageModel
 
     public IList<Merkozes> Merkozesek { get; set; } = new List<Merkozes>();
 
+    [BindProperty(SupportsGet = true)]
+    public string Szuro { get; set; } = "osszes";
+
     public async Task OnGetAsync()
     {
-        Merkozesek = await _context.Merkozesek
+        var lekérdezés = _context.Merkozesek
             .AsNoTracking()
             .Include(m => m.HazaiCsapat)
             .Include(m => m.VendegCsapat)
+            .AsQueryable();
+
+        if (Szuro == "lejatszott")
+        {
+            lekérdezés = lekérdezés.Where(m =>
+                m.HazaiGol.HasValue &&
+                m.VendegGol.HasValue);
+        }
+        else if (Szuro == "hatralevo")
+        {
+            lekérdezés = lekérdezés.Where(m =>
+                !m.HazaiGol.HasValue ||
+                !m.VendegGol.HasValue);
+        }
+        else
+        {
+            Szuro = "osszes";
+        }
+
+        Merkozesek = await lekérdezés
             .OrderByDescending(m => m.Datum)
             .ToListAsync();
     }
