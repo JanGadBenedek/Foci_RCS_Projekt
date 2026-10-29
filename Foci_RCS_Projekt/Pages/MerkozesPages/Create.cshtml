@@ -1,0 +1,84 @@
+﻿@page
+@model Foci_RCS_Projekt.Pages.MerkozesPages.CreateModel
+
+@{
+    ViewData["Title"] = "Új mérkőzés";
+}
+
+<h1>Új mérkőzés felvétele</h1>
+
+<p class="text-muted">
+    Válaszd ki a két csapatot, és add meg a mérkőzés időpontját.
+</p>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Merkozes.HazaiCsapatId"
+                       class="form-label">
+                    Hazai csapat
+                </label>
+
+                <select asp-for="Merkozes.HazaiCsapatId"
+                        asp-items="Model.CsapatLista"
+                        class="form-select">
+                    <option value="">-- Válassz hazai csapatot --</option>
+                </select>
+
+                <span asp-validation-for="Merkozes.HazaiCsapatId"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Merkozes.VendegCsapatId"
+                       class="form-label">
+                    Vendégcsapat
+                </label>
+
+                <select asp-for="Merkozes.VendegCsapatId"
+                        asp-items="Model.CsapatLista"
+                        class="form-select">
+                    <option value="">-- Válassz vendégcsapatot --</option>
+                </select>
+
+                <span asp-validation-for="Merkozes.VendegCsapatId"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Merkozes.Datum"
+                       class="form-label">
+                    Mérkőzés dátuma
+                </label>
+
+                <input asp-for="Merkozes.Datum"
+                       type="date"
+                       asp-format="{0:yyyy-MM-dd}"
+                       class="form-control" />
+
+                <span asp-validation-for="Merkozes.Datum"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Mérkőzés mentése
+            </button>
+
+            <a asp-page="./Index" class="btn btn-secondary">
+                Mégse
+            </a>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

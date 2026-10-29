@@ -1,0 +1,64 @@
+﻿@page "{id:int}"
+@model Foci_RCS_Projekt.Pages.MerkozesPages.DeleteModel
+
+@{
+    ViewData["Title"] = "Mérkőzés törlése";
+}
+
+<h1>Mérkőzés törlése</h1>
+
+<div class="alert alert-warning">
+    <strong>Figyelem!</strong> Biztosan törölni szeretnéd ezt a mérkőzést?
+    A művelet nem vonható vissza.
+</div>
+
+<div class="card shadow-sm" style="max-width: 650px;">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Dátum</dt>
+            <dd class="col-sm-8">
+                @Model.Merkozes.Datum.ToString("yyyy. MM. dd.")
+            </dd>
+
+            <dt class="col-sm-4">Hazai csapat</dt>
+            <dd class="col-sm-8">
+                @Model.Merkozes.HazaiCsapat.Nev
+            </dd>
+
+            <dt class="col-sm-4">Eredmény</dt>
+            <dd class="col-sm-8">
+                @if (Model.Merkozes.HazaiGol.HasValue &&
+                     Model.Merkozes.VendegGol.HasValue)
+                {
+                    <strong>
+                        @Model.Merkozes.HazaiGol – @Model.Merkozes.VendegGol
+                    </strong>
+                }
+                else
+                {
+                    <span class="text-muted">Még nincs eredmény</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">Vendégcsapat</dt>
+            <dd class="col-sm-8">
+                @Model.Merkozes.VendegCsapat.Nev
+            </dd>
+        </dl>
+
+        <hr />
+
+        <form method="post">
+            <input type="hidden" name="id"
+                   value="@Model.Merkozes.Id" />
+
+            <button type="submit" class="btn btn-danger">
+                Igen, törlés
+            </button>
+
+            <a asp-page="./Index" class="btn btn-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>

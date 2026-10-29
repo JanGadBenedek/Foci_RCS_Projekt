@@ -1,0 +1,85 @@
+﻿@page
+@model Foci_RCS_Projekt.Pages.MerkozesPages.IndexModel
+
+@{
+    ViewData["Title"] = "Mérkőzések";
+}
+
+<h1>Mérkőzések</h1>
+
+<p class="text-muted">
+    A bajnokság mérkőzéseinek és eredményeinek nyilvántartása.
+</p>
+
+<p>
+    <a asp-page="./Create" class="btn btn-primary">
+        + Új mérkőzés felvétele
+    </a>
+</p>
+
+@if (TempData["Siker"] != null)
+{
+    <div class="alert alert-success">@TempData["Siker"]</div>
+}
+
+@if (TempData["Hiba"] != null)
+{
+    <div class="alert alert-danger">@TempData["Hiba"]</div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Dátum</th>
+                <th>Hazai csapat</th>
+                <th>Eredmény</th>
+                <th>Vendégcsapat</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Merkozesek.Count == 0)
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        Még nincs felvett mérkőzés.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var meccs in Model.Merkozesek)
+                {
+                    <tr>
+                        <td>@meccs.Datum.ToString("yyyy. MM. dd.")</td>
+                        <td class="fw-semibold">@meccs.HazaiCsapat.Nev</td>
+                        <td>
+                            @if (meccs.HazaiGol.HasValue && meccs.VendegGol.HasValue)
+                            {
+                                <strong>@meccs.HazaiGol – @meccs.VendegGol</strong>
+                            }
+                            else
+                            {
+                                <span class="text-muted">– : –</span>
+                            }
+                        </td>
+                        <td class="fw-semibold">@meccs.VendegCsapat.Nev</td>
+                        <td>
+                            <a asp-page="./Edit"
+                               asp-route-id="@meccs.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Eredmény / szerkesztés
+                            </a>
+                            <a asp-page="./Delete"
+                               asp-route-id="@meccs.Id"
+                               class="btn btn-sm btn-outline-danger">
+                                Törlés
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

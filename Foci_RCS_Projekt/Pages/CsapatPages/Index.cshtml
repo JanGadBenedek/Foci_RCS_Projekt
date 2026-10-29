@@ -1,0 +1,75 @@
+﻿@page
+@model Foci_RCS_Projekt.Pages.CsapatPages.IndexModel
+
+@{
+    ViewData["Title"] = "Csapatok";
+}
+
+<h1>Labdarúgócsapatok</h1>
+
+@if (TempData["Siker"] != null)
+{
+    <div class="alert alert-success">@TempData["Siker"]</div>
+}
+
+@if (TempData["Hiba"] != null)
+{
+    <div class="alert alert-danger">@TempData["Hiba"]</div>
+}
+
+<p class="text-muted">
+    A bajnokságban szereplő csapatok nyilvántartása.
+</p>
+
+<p>
+    <a asp-page="./Create" class="btn btn-primary">
+        + Új csapat felvétele
+    </a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Csapat neve</th>
+            <th>Város</th>
+            <th>Alapítás éve</th>
+            <th>Műveletek</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Csapatok.Count == 0)
+        {
+            <tr>
+                <td colspan="4">Még nincs felvett csapat.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var csapat in Model.Csapatok)
+            {
+                <tr>
+                    <td class="fw-semibold">@csapat.Nev</td>
+                    <td>@(string.IsNullOrWhiteSpace(csapat.Varos) ? "—" : csapat.Varos)</td>
+                    <td>@(csapat.AlapitasEve?.ToString() ?? "—")</td>
+                    <td>
+                        <a asp-page="./Details"
+                           asp-route-id="@csapat.Id"
+                           class="btn btn-outline-info btn-sm">
+                            Részletek
+                        </a>
+                        <a asp-page="./Edit"
+                           asp-route-id="@csapat.Id"
+                           class="btn btn-outline-primary btn-sm">
+                            Szerkesztés
+                        </a>
+                        <a asp-page="./Delete"
+                           asp-route-id="@csapat.Id"
+                           class="btn btn-outline-danger btn-sm">
+                            Törlés
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

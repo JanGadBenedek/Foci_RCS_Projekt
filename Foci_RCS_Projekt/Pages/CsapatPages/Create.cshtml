@@ -1,0 +1,67 @@
+﻿@page
+@model Foci_RCS_Projekt.Pages.CsapatPages.CreateModel
+
+@{
+    ViewData["Title"] = "Új csapat";
+}
+
+<h1>Új csapat felvétele</h1>
+
+<p class="text-muted">
+    Add meg a bajnokságban szereplő csapat adatait.
+</p>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-5">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Csapat.Nev" class="form-label">
+                    Csapat neve
+                </label>
+                <input asp-for="Csapat.Nev" class="form-control"
+                       placeholder="" />
+                <span asp-validation-for="Csapat.Nev"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Csapat.Varos" class="form-label">
+                    Város
+                </label>
+                <input asp-for="Csapat.Varos" class="form-control"
+                       placeholder="" />
+                <span asp-validation-for="Csapat.Varos"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Csapat.AlapitasEve" class="form-label">
+                    Alapítás éve
+                </label>
+                <input asp-for="Csapat.AlapitasEve"
+                       type="number" min="1850" max="2100"
+                       class="form-control"
+                       placeholder="" />
+                <span asp-validation-for="Csapat.AlapitasEve"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Csapat mentése
+            </button>
+
+            <a asp-page="./Index" class="btn btn-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

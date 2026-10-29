@@ -1,0 +1,98 @@
+﻿@page "{id:int}"
+@model Foci_RCS_Projekt.Pages.MerkozesPages.EditModel
+
+@{
+    ViewData["Title"] = "Eredmény rögzítése";
+}
+
+<h1>Eredmény rögzítése</h1>
+
+<p class="text-muted">
+    Itt tudod megadni vagy módosítani a mérkőzés végeredményét.
+</p>
+
+<hr />
+
+@if (Model.Merkozes.HazaiCsapat == null ||
+     Model.Merkozes.VendegCsapat == null)
+{
+    <div class="alert alert-danger">
+        A mérkőzés adatai nem tölthetők be.
+    </div>
+}
+else
+{
+    <div class="card shadow-sm" style="max-width: 650px;">
+        <div class="card-body">
+            <p class="text-muted mb-1">Mérkőzés dátuma</p>
+            <h5 class="mb-4">
+                @Model.Merkozes.Datum.ToString("yyyy. MM. dd.")
+            </h5>
+
+            <form method="post">
+                <input type="hidden" name="id"
+                       value="@Model.Merkozes.Id" />
+
+                <div asp-validation-summary="All"
+                     class="text-danger mb-3"></div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-5 mb-3">
+                        <label class="form-label">
+                            @Model.Merkozes.HazaiCsapat.Nev góljai
+                        </label>
+
+                        <input name="Merkozes.HazaiGol"
+                               type="number"
+                               min="0"
+                               max="99"
+                               required
+                               class="form-control"
+                               value="@Model.Merkozes.HazaiGol" />
+                    </div>
+
+                    <div class="col-md-2 text-center mb-3">
+                        <span class="fs-4 fw-bold">–</span>
+                    </div>
+
+                    <div class="col-md-5 mb-3">
+                        <label class="form-label">
+                            @Model.Merkozes.VendegCsapat.Nev góljai
+                        </label>
+
+                        <input name="Merkozes.VendegGol"
+                               type="number"
+                               min="0"
+                               max="99"
+                               required
+                               class="form-control"
+                               value="@Model.Merkozes.VendegGol" />
+                    </div>
+                </div>
+
+                @if (DateTime.Today < Model.Merkozes.Datum.Date)
+                {
+                    <div class="alert alert-warning">
+                        Ez a mérkőzés még nem kezdődhetett el.
+                        Az eredmény a mérkőzés napján vagy utána rögzíthető.
+                    </div>
+                }
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        disabled="@(DateTime.Today < Model.Merkozes.Datum.Date)">
+                    Eredmény mentése
+                </button>
+
+                <a asp-page="./Index"
+                   class="btn btn-secondary">
+                    Vissza
+                </a>
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

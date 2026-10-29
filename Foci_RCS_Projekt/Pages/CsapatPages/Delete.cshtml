@@ -1,0 +1,44 @@
+﻿@page
+@model Foci_RCS_Projekt.Pages.CsapatPages.DeleteModel
+
+@{
+    ViewData["Title"] = "Csapat törlése";
+}
+
+<h1>Csapat törlése</h1>
+
+<div class="alert alert-warning">
+    <strong>Biztosan törölni szeretnéd ezt a csapatot?</strong>
+    A művelet nem vonható vissza.
+</div>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Csapat neve</dt>
+    <dd class="col-sm-9">@Model.Csapat.Nev</dd>
+
+    <dt class="col-sm-3">Város</dt>
+    <dd class="col-sm-9">
+        @(string.IsNullOrWhiteSpace(Model.Csapat.Varos)
+            ? "Nincs megadva"
+            : Model.Csapat.Varos)
+    </dd>
+
+    <dt class="col-sm-3">Alapítás éve</dt>
+    <dd class="col-sm-9">
+        @(Model.Csapat.AlapitasEve?.ToString() ?? "Nincs megadva")
+    </dd>
+</dl>
+
+<form method="post" class="mt-4">
+    <input type="hidden" name="id" value="@Model.Csapat.Id" />
+
+    <button type="submit" class="btn btn-danger">
+        Csapat törlése
+    </button>
+
+    <a asp-page="./Index" class="btn btn-secondary">
+        Mégse, vissza a listához
+    </a>
+</form>
