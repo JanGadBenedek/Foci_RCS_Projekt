@@ -5,11 +5,15 @@
     ViewData["Title"] = "Mérkőzések";
 }
 
-<h1>Mérkőzések</h1>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">Mérkőzések</h1>
+    </div>
 
-<p class="text-muted">
-    A bajnokság mérkőzéseinek és eredményeinek nyilvántartása.
-</p>
+    <a asp-page="./Create" class="btn btn-success">
+        + Új mérkőzés
+    </a>
+</div>
 
 @if (TempData["Siker"] != null)
 {
@@ -21,47 +25,50 @@
     <div class="alert alert-danger">@TempData["Hiba"]</div>
 }
 
-<p>
-    <a asp-page="./Create" class="btn btn-primary">
-        + Új mérkőzés felvétele
-    </a>
-</p>
+<div class="border rounded p-3 mb-4 bg-light">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <label for="Szuro" class="form-label">Mérkőzések szűrése</label>
+            <select id="Szuro" name="Szuro" class="form-select">
+                <option value="osszes" selected="@(Model.Szuro == "osszes")">
+                    Összes mérkőzés
+                </option>
+                <option value="lejatszott" selected="@(Model.Szuro == "lejatszott")">
+                    Lejátszott mérkőzések
+                </option>
+                <option value="hatralevo" selected="@(Model.Szuro == "hatralevo")">
+                    Hátralévő mérkőzések
+                </option>
+            </select>
+        </div>
 
-<form method="get" class="row g-2 align-items-end mb-4">
-    <div class="col-md-4">
-        <label for="Szuro" class="form-label">Mérkőzések szűrése</label>
-        <select id="Szuro" name="Szuro" class="form-select">
-            <option value="osszes" selected="@(Model.Szuro == "osszes")">
-                Összes mérkőzés
-            </option>
-            <option value="lejatszott" selected="@(Model.Szuro == "lejatszott")">
-                Lejátszott mérkőzések
-            </option>
-            <option value="hatralevo" selected="@(Model.Szuro == "hatralevo")">
-                Hátralévő mérkőzések
-            </option>
-        </select>
-    </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-success">
+                Szűrés
+            </button>
+            <a asp-page="./Index" class="btn btn-outline-secondary">
+                Alaphelyzet
+            </a>
+        </div>
+    </form>
+</div>
 
-    <div class="col-auto">
-        <button type="submit" class="btn btn-outline-primary">
-            Szűrés
-        </button>
-        <a asp-page="./Index" class="btn btn-outline-secondary">
-            Összes
-        </a>
-    </div>
-</form>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="mb-0">Mérkőzéslista</h5>
+    <span class="text-muted small">
+        Találatok: @Model.Merkozesek.Count
+    </span>
+</div>
 
 <div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead>
+    <table class="table align-middle">
+        <thead class="table-light">
             <tr>
                 <th>Dátum</th>
                 <th>Hazai csapat</th>
-                <th>Eredmény</th>
+                <th class="text-center">Eredmény</th>
                 <th>Vendégcsapat</th>
-                <th>Műveletek</th>
+                <th class="text-end">Műveletek</th>
             </tr>
         </thead>
         <tbody>
@@ -78,12 +85,16 @@
                 @foreach (var meccs in Model.Merkozesek)
                 {
                     <tr>
-                        <td>@meccs.Datum.ToString("yyyy. MM. dd.")</td>
+                        <td class="text-nowrap">
+                            @meccs.Datum.ToString("yyyy. MM. dd.")
+                        </td>
                         <td class="fw-semibold">@meccs.HazaiCsapat.Nev</td>
-                        <td>
+                        <td class="text-center">
                             @if (meccs.HazaiGol.HasValue && meccs.VendegGol.HasValue)
                             {
-                                <strong>@meccs.HazaiGol – @meccs.VendegGol</strong>
+                                <span class="fw-bold">
+                                    @meccs.HazaiGol – @meccs.VendegGol
+                                </span>
                             }
                             else
                             {
@@ -91,17 +102,19 @@
                             }
                         </td>
                         <td class="fw-semibold">@meccs.VendegCsapat.Nev</td>
-                        <td>
-                            <a asp-page="./Edit"
-                               asp-route-id="@meccs.Id"
-                               class="btn btn-sm btn-outline-primary">
-                                Eredmény / szerkesztés
-                            </a>
-                            <a asp-page="./Delete"
-                               asp-route-id="@meccs.Id"
-                               class="btn btn-sm btn-outline-danger">
-                                Törlés
-                            </a>
+                        <td class="text-end">
+                            <div class="d-inline-flex flex-wrap gap-1">
+                                <a asp-page="./Edit"
+                                   asp-route-id="@meccs.Id"
+                                   class="btn btn-sm btn-outline-success">
+                                    Eredmény / szerkesztés
+                                </a>
+                                <a asp-page="./Delete"
+                                   asp-route-id="@meccs.Id"
+                                   class="btn btn-sm btn-outline-danger">
+                                    Törlés
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -109,7 +122,3 @@
         </tbody>
     </table>
 </div>
-
-<p class="text-muted small">
-    Megjelenített mérkőzések száma: @Model.Merkozesek.Count
-</p>
