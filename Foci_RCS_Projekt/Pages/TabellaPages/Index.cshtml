@@ -7,12 +7,9 @@
 
 <h1>Bajnoki tabella</h1>
 
-<p class="text-muted">
-    A csapatok sorrendje a pontszám, a gólkülönbség és a rúgott gólok alapján alakul.
-</p>
 
 <div class="table-responsive">
-    <table class="table table-striped table-hover align-middle">
+    <table class="table table-hover align-middle">
         <thead class="table-dark">
             <tr>
                 <th>Hely</th>
@@ -42,9 +39,55 @@
                 {
                     var sor = Model.Tabella[i];
 
-                    <tr>
-                        <td class="fw-bold">@(i + 1).</td>
-                        <td class="fw-semibold">@sor.CsapatNev</td>
+                    string sorSzin = "";
+
+                    if (i == 0)
+                    {
+                        sorSzin = "arany-hely";
+                    }
+                    else if (i == 1)
+                    {
+                        sorSzin = "ezust-hely";
+                    }
+                    else if (i == 2)
+                    {
+                        sorSzin = "bronz-hely";
+                    }
+                    else if (i == Model.Tabella.Count - 1 && Model.Tabella.Count >= 4)
+                    {
+                        sorSzin = "kieso-hely";
+                    }
+
+                    <tr class="@sorSzin">
+                        <td class="fw-bold">
+                            @if (i == 0)
+                            {
+                                <span>🥇 1.</span>
+                            }
+                            else if (i == 1)
+                            {
+                                <span>🥈 2.</span>
+                            }
+                            else if (i == 2)
+                            {
+                                <span>🥉 3.</span>
+                            }
+                            else if (i == Model.Tabella.Count - 1 && Model.Tabella.Count >= 4)
+                            {
+                                <span>🔻 @(i + 1).</span>
+                            }
+                            else
+                            {
+                                <span>@(i + 1).</span>
+                            }
+                        </td>
+                        <td class="fw-semibold">
+                            @sor.CsapatNev
+                            @if (i == Model.Tabella.Count - 1 && Model.Tabella.Count >= 4)
+                            {
+                                <span class="badge bg-danger ms-1">Kiesőzóna</span>
+                            }
+                        </td>
                         <td>@sor.Lejatszott</td>
                         <td>@sor.Gyozelem</td>
                         <td>@sor.Dontetlen</td>
@@ -66,5 +109,27 @@
     <p><strong>M:</strong> lejátszott mérkőzések</p>
     <p><strong>GY:</strong> győzelem · <strong>D:</strong> döntetlen · <strong>V:</strong> vereség</p>
     <p><strong>RG:</strong> rúgott gól · <strong>KG:</strong> kapott gól · <strong>GK:</strong> gólkülönbség</p>
-    <p><strong>Pontozás:</strong> győzelem 3 pont, döntetlen 1 pont, vereség 0 pont.</p>
+    <p>Utolsó hely= Kiesőzóna!</p>
 </div>
+
+<style>
+    .arany-hely > td {
+        background-color: #ffe08a !important;
+        color: #664600;
+    }
+
+    .ezust-hely > td {
+        background-color: #d9dee3 !important;
+        color: #343a40;
+    }
+
+    .bronz-hely > td {
+        background-color: #e8b08b !important;
+        color: #633b24;
+    }
+
+    .kieso-hely > td {
+        background-color: #f5b7b7 !important;
+        color: #842029;
+    }
+</style>
